@@ -27,7 +27,7 @@ let package = Package(
             name: "FastRTPSBridgeTests",
             dependencies: ["FastRTPSBridge"]),
     ],
-    swiftLanguageVersions: [.v5],
+    //swiftLanguageVersions: [.v5],
     cxxLanguageStandard: .cxx11
 )
 
