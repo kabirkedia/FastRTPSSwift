@@ -285,7 +285,8 @@ bool BridgedParticipant::send(const char* name, const uint8_t* data, uint32_t le
     }
     auto writerInfo = writerList[topicName];
     if (writerInfo->listener->n_matched == 0) {
-        return false;
+        printf("Publish on topic %s with no listeners!\n", topicName.c_str())
+        // return false;
     }
     auto writer = writerInfo->writer;
     auto history = writerInfo->history;
