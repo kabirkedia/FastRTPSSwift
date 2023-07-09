@@ -19,8 +19,15 @@ public protocol RTPSParticipantListenerDelegate {
     func readerWriterNotificaton(reason: RTPSReaderWriterNotification, topic: String, type: String, remoteLocators: String)
 }
 
+public protocol RTPSSubscriberDelegate{
+    func notify(topic: String)
+}
+
 public enum FastRTPSBridgeError: Error {
     case fastRTPSError
+    case RTPSContextInitializationError
+    case RTPSNodeInitializationError
+    case RTPSRegisterError
 }
 
 open class FastRTPSBridge {
@@ -119,7 +126,7 @@ open class FastRTPSBridge {
         if !wrapper.createParticipant(domain: domainID,
                                   name: name.cString(using: .utf8)!,
                                   localAddress: localAddress?.cString(using: .utf8)) {
-            throw FastRTPSBridgeError.fastRTPSError
+            throw FastRTPSBridgeError.RTPSContextInitializationError
         }
     }
     #endif
@@ -167,11 +174,14 @@ open class FastRTPSBridge {
     /// - Parameters:
     ///   - topic: DDSReader topic description
     ///   - completion: callback with Result<D, Error>, where D is deserialized data
-    public func registerReader<D: DDSType, T: DDSReaderTopic>(topic: T, completion: @escaping (Result<D, Error>)->Void) throws {
+    public func registerReader<D: DDSType, T: DDSReaderTopic>(topic: T, completion: @escaping (Result<D, Error>)->Void, subDelegate: RTPSSubscriberDelegate? = nil) throws {
         try registerReaderRaw(topic: topic, ddsType: D.self) { (_, data) in
             let decoder = CDRDecoder()
             let result = Result.init { try decoder.decode(D.self, from: data) }
             completion(result)
+            if subDelegate != nil{
+                subDelegate!.notify(topic: topic.rawValue)
+            }
         }
     }
     
@@ -179,12 +189,15 @@ open class FastRTPSBridge {
     /// - Parameters:
     ///   - topic: DDSReaderTopic topic description
     ///   - completion: callback with deserialized data
-    public func registerReader<D: DDSType, T: DDSReaderTopic>(topic: T, completion: @escaping (D)->Void) throws {
+    public func registerReader<D: DDSType, T: DDSReaderTopic>(topic: T, completion: @escaping (D)->Void, subDelegate: RTPSSubscriberDelegate? = nil) throws {
         try registerReaderRaw(topic: topic, ddsType: D.self) { (_, data) in
             let decoder = CDRDecoder()
             do {
                 let t = try decoder.decode(D.self, from: data)
                 completion(t)
+                if subDelegate != nil{
+                    subDelegate!.notify(topic: topic.rawValue)
+                }
             } catch {
                 print(topic.rawValue, error)
             }
@@ -210,7 +223,7 @@ open class FastRTPSBridge {
                                keyed: ddsType is DDSKeyed.Type,
                                transientLocal: topic.transientLocal,
                                reliable: topic.reliable) {
-            throw FastRTPSBridgeError.fastRTPSError
+            throw FastRTPSBridgeError.RTPSRegisterError
         }
     }
     
