@@ -28,6 +28,7 @@ public enum FastRTPSBridgeError: Error {
     case RTPSContextInitializationError
     case RTPSNodeInitializationError
     case RTPSRegisterError
+    case RTPSSendError
 }
 
 open class FastRTPSBridge {
@@ -254,14 +255,14 @@ open class FastRTPSBridge {
                                                 length: UInt32(data.count),
                                                 key: keyPtr.baseAddress!,
                                                 keyLength: UInt32(key.count)) {
-                        throw FastRTPSBridgeError.fastRTPSError
+                        throw FastRTPSBridgeError.RTPSSendError
                     }
                 }
             } else {
                 if !wrapper.sendData(topicName: topic.rawValue.cString(using: .utf8)!,
                                      data: dataPtr.baseAddress!,
                                      length: UInt32(data.count)) {
-                    throw FastRTPSBridgeError.fastRTPSError
+                    throw FastRTPSBridgeError.RTPSSendError
                 }
             }
         }
