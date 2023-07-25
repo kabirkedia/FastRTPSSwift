@@ -8,10 +8,10 @@ import Foundation
 
 
 public protocol DDSTopic: RawRepresentable where RawValue == String {
-    var transientLocal: Bool { get set}
-    var reliable: Bool { get set }
+    var transientLocal: Bool { get }
+    var reliable: Bool { get }
     
-    init(name: String, reliable: Bool, transientLocal: Bool)
+//    init(name: String, reliable: Bool, transientLocal: Bool)
 }
 
 public protocol DDSReaderTopic: DDSTopic {}
