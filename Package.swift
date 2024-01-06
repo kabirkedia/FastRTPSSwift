@@ -12,7 +12,7 @@ let package = Package(
     ],
     dependencies: [
         .package(name: "CDRCodable", url: "https://github.com/DimaRU/CDRCodable.git", from: "1.0.0"),
-        .package(name: "FastDDS", url: "https://github.com/huyaoyu/FastDDSPrebuild.git", .upToNextMajor(from: "2.6.6"))
+        .package(name: "FastDDS", url: "https://github.com/DimaRU/FastDDSPrebuild.git", .upToNextMajor(from: "2.13.0"))
     ],
     targets: [
         .target(
