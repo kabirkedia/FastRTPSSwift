@@ -11,8 +11,8 @@ let package = Package(
             targets: ["FastRTPSBridge"]),
     ],
     dependencies: [
-        .package(name: "CDRCodable", url: "https://github.com/DimaRU/CDRCodable.git", from: "1.0.0"),
-        .package(name: "FastDDS", url: "https://github.com/DimaRU/FastDDSPrebuild.git", .upToNextMajor(from: "2.0.0"))
+        .package(name: "CDRCodable", url: "https://github.com/DimaRU/CDRCodable.git", "1.0.0"..<"1.1.0"),
+        .package(name: "FastDDS", url: "https://github.com/DimaRU/FastDDSPrebuild.git", "2.14.0"..<"2.14.1")
     ],
     targets: [
         .target(
